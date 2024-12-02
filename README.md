@@ -39,4 +39,7 @@ $ node load.js
 ```bash
 # Search the song using Spotify API
 ```
+### 결과
+![화면 기록 2024-12-02 오후 2 09 50](https://github.com/user-attachments/assets/440c209a-428c-4d3b-a031-46e52b8ca239)
+
 
