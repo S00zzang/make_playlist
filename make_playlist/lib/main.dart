@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,6 +28,9 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
   bool isSidebarOpen = false; // 사이드바 상태 관리
   bool isLoading = false; // 로딩 상태
   final String apiUrl = 'http://192.168.0.4:3000/spotify'; // Node.js 서버 URL
+
+  // InAppWebViewController를 사용하여 WebView 관리
+  InAppWebViewController? _webViewController;
 
   // Spotify 검색 API 호출
   Future<void> _searchSpotify() async {
@@ -87,6 +91,35 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
     setState(() {
       isSidebarOpen = !isSidebarOpen;
     });
+  }
+
+  // 트랙을 클릭하여 미리 듣기
+  void _showTrackPreview(String trackId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: double.infinity,
+            height: 400,
+            child: InAppWebView(
+              initialUrlRequest: URLRequest(
+                url: WebUri(
+                    'https://open.spotify.com/embed/track/$trackId'), // Spotify 미리 듣기 URL
+              ),
+              initialOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(
+                  javaScriptEnabled: true, // 자바스크립트 허용
+                ),
+              ),
+              onWebViewCreated: (InAppWebViewController controller) {
+                _webViewController = controller;
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // 플레이리스트가 최소 10곡 이상일 때
@@ -242,6 +275,8 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
                                       child: Text(
                                           isAlreadyAdded ? '이미 담긴 곡' : '담기'),
                                     ),
+                                    onTap: () => _showTrackPreview(
+                                        track['id']), // 트랙 클릭 시 미리 듣기
                                   );
                                 },
                               ),
