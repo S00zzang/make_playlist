@@ -35,3 +35,8 @@ $ npm install express axios cors
 $ node load.js
 ```
 
+# STEP 1
+```bash
+# Search the song using Spotify API
+```
+
