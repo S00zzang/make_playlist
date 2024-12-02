@@ -17,8 +17,6 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.3.3
-
-  flutter_inappwebview: ^6.1.5
 ```
 ```
 $ flutter pub get
