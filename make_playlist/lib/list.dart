@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:confetti/confetti.dart';
 import 'main.dart';
 
 void main() {
@@ -19,6 +20,22 @@ class MyPlaylistPage extends StatefulWidget {
 }
 
 class _MyPlaylistPageState extends State<MyPlaylistPage> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    // ConfettiController를 하나로 통합하여 위쪽으로 떨어지게 설정
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 1));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
+
   // 플레이리스트에서 노래 삭제
   void _removeTrack(BuildContext context, Map<String, dynamic> track) {
     setState(() {
@@ -34,6 +51,9 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
   // '완성' 버튼 눌렀을 때 처리
   void _onComplete(BuildContext context) {
     if (widget.selectedTracks.length >= 10) {
+      // Confetti 애니메이션 시작
+      _confettiController.play();
+
       // 완료 팝업 표시
       showDialog(
         context: context,
@@ -44,8 +64,7 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
             textAlign: TextAlign.center, // 제목 가운데 정렬
           ),
           content: const Text(
-            '플레이리스트가 완성되었습니다!\n'
-            '분석결과는 My Page에서 확인하실 수 있습니다.',
+            '플레이리스트가 완성되었습니다!',
             textAlign: TextAlign.center, // 본문 텍스트 가운데 정렬
             style: TextStyle(fontSize: 14), // 텍스트 크기 조정
           ),
@@ -54,7 +73,7 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
               onPressed: () {
                 Navigator.pop(context); // 팝업 닫기
                 // '확인' 버튼 클릭 후 더 담기 화면으로 이동
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => PlaylistSearchPage(
@@ -95,72 +114,92 @@ class _MyPlaylistPageState extends State<MyPlaylistPage> {
         backgroundColor: Colors.blue,
         leading: Container(), // 왼쪽 화살표 버튼 제거
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            Expanded(
-              child: widget.selectedTracks.isEmpty
-                  ? const Center(child: Text('플레이리스트에 곡이 없습니다.'))
-                  : ListView.builder(
-                      itemCount: widget.selectedTracks.length,
-                      itemBuilder: (context, index) {
-                        final track = widget.selectedTracks[index];
-                        return ListTile(
-                          leading: track['album']['images'].isNotEmpty
-                              ? Image.network(
-                                  track['album']['images'][0]['url'],
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                )
-                              : const Icon(Icons.music_note),
-                          title: Text('${index + 1}. ${track['name']}'),
-                          subtitle: Text(track['artists']
-                              .map((artist) => artist['name'])
-                              .join(', ')),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _removeTrack(context, track),
+      body: Stack(
+        children: [
+          // 위쪽에서 Confetti 애니메이션
+          ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            blastDirection: -3.14 / 2, // 위쪽으로 퍼지도록 설정
+            gravity: 0.1, // 중력 설정 (입자가 천천히 떨어지도록 조절)
+            numberOfParticles: 100,
+            emissionFrequency: 0.05,
+            colors: const [
+              Colors.red,
+              Colors.green,
+              Colors.blue,
+              Colors.yellow
+            ], // 여러 색상 설정
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: widget.selectedTracks.isEmpty
+                      ? const Center(child: Text('플레이리스트에 곡이 없습니다.'))
+                      : ListView.builder(
+                          itemCount: widget.selectedTracks.length,
+                          itemBuilder: (context, index) {
+                            final track = widget.selectedTracks[index];
+                            return ListTile(
+                              leading: track['album']['images'].isNotEmpty
+                                  ? Image.network(
+                                      track['album']['images'][0]['url'],
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(Icons.music_note),
+                              title: Text('${index + 1}. ${track['name']}'),
+                              subtitle: Text(track['artists']
+                                  .map((artist) => artist['name'])
+                                  .join(', ')),
+                              trailing: IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => _removeTrack(context, track),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                const SizedBox(height: 20),
+                // '더 담기' 버튼과 '완성' 버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // 더 담기 버튼을 누르면 main.dart로 이동
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlaylistSearchPage(
+                              selectedTracks: widget.selectedTracks,
+                              onPlaylistUpdated: widget.onPlaylistUpdated,
+                            ),
                           ),
                         );
                       },
+                      child: const Text('더 담기'),
                     ),
-            ),
-            const SizedBox(height: 20),
-            // '더 담기' 버튼과 '완성' 버튼
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // 더 담기 버튼을 누르면 main.dart로 이동
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlaylistSearchPage(
-                          selectedTracks: widget.selectedTracks,
-                          onPlaylistUpdated: widget.onPlaylistUpdated,
-                        ),
+                    ElevatedButton(
+                      onPressed: () => _onComplete(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.selectedTracks.length >= 10
+                            ? Colors.green
+                            : Colors.white,
                       ),
-                    );
-                  },
-                  child: const Text('더 담기'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _onComplete(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.selectedTracks.length >= 10
-                        ? Colors.green
-                        : Colors.white,
-                  ),
-                  child: const Text('완성'),
+                      child: const Text('완성'),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

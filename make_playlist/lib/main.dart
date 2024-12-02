@@ -252,7 +252,7 @@ class _PlaylistPageState extends State<PlaylistSearchPage> {
                   ),
                   const SizedBox(height: 14),
                   const Text(
-                    '최소 10곡을 골라 플레이리스트를 완성하세요. \n노래가 많을수록 분석 결과가 더욱 정확해집니다!',
+                    '최소 10곡을 골라 플레이리스트를 완성하세요!',
                     style: TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 10),
