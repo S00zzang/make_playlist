@@ -70,7 +70,6 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
           'artists': track['artists'],
           'album': track['album'],
         });
-        isSidebarOpen = true; // 트랙이 추가되면 사이드바 열기
       });
     }
   }
@@ -93,16 +92,6 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Spotify Playlist Search'),
-        actions: [
-          // 사이드바 토글 버튼 (AppBar 우측에 배치)
-          IconButton(
-            icon: Icon(isSidebarOpen ? Icons.close : Icons.menu),
-            onPressed: _toggleSidebar,
-          ),
-        ],
-      ),
       body: Row(
         children: [
           // 사이드바: 왼쪽에 플레이리스트 표시
@@ -236,6 +225,12 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
             ),
           ),
         ],
+      ),
+      // 오른쪽 아래에 고정된 음악 아이콘 버튼 추가
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toggleSidebar,
+        backgroundColor: Colors.blue, // 버튼 클릭 시 사이드바 열고 닫기
+        child: Icon(Icons.audiotrack),
       ),
     );
   }
