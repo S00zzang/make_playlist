@@ -89,6 +89,32 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
     });
   }
 
+  // 플레이리스트가 최소 10곡 이상일 때
+  bool get isPlaylistComplete => selectedTracks.length >= 10;
+
+  // 플레이리스트 완성 여부 체크
+  void _onComplete() {
+    if (isPlaylistComplete) {
+      // 플레이리스트가 10곡 이상일 때, 원하는 작업 수행
+      print("플레이리스트가 완성되었습니다.");
+    } else {
+      // 플레이리스트가 10곡 미만일 때 알림
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("플레이리스트 미완성"),
+          content: const Text("최소 10곡을 선택하세요."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("확인"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,6 +245,14 @@ class _PlaylistSearchPageState extends State<PlaylistSearchPage> {
                                   );
                                 },
                               ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _onComplete,
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isPlaylistComplete ? Colors.green : Colors.grey),
+                    child: const Text('완성'),
                   ),
                 ],
               ),
