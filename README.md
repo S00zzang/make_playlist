@@ -17,6 +17,9 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.3.3
+  confetti: ^0.8.0
+
+  flutter_inappwebview: ^6.1.5
 ```
 ```
 $ flutter pub get
@@ -55,3 +58,12 @@ $ node load.js
 ### 결과
 ![2-1](https://github.com/user-attachments/assets/5b15f9d7-fe10-46fb-9abf-b909def97be4)
 ![2-2](https://github.com/user-attachments/assets/3ec850a6-9ee9-46d4-945b-959086f2486e)
+
+# STEP 3
+```bash
+# Make a confirm page
+```
+
+### 결과
+![3-1](https://github.com/user-attachments/assets/2f51bb68-d7f4-497f-ac00-c75d9993fa03)
+![3-2](https://github.com/user-attachments/assets/62dc4619-2ad3-46c0-bb5c-fb64593718f0)
