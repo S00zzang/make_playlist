@@ -40,6 +40,18 @@ $ node load.js
 # Search the song using Spotify API
 ```
 ### 결과
-![화면 기록 2024-12-02 오후 2 09 50](https://github.com/user-attachments/assets/440c209a-428c-4d3b-a031-46e52b8ca239)
+![화면 기록 2024-12-02 오후 2 09 50](https://github.com/user-attachments/assets/440c209a-428c-4d3b-a031-46e52b8ca239)
 
 
+
+# STEP 2
+```bash
+# Make a playlist
+
+# add songs more than 10
+# make a sidebar to show the list
+# preview the song
+```
+### 결과
+![2-1](https://github.com/user-attachments/assets/5b15f9d7-fe10-46fb-9abf-b909def97be4)
+![2-2](https://github.com/user-attachments/assets/3ec850a6-9ee9-46d4-945b-959086f2486e)
